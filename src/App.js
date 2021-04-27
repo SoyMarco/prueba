@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
 
-function App() {
+export default function App() {
+  const [data, setData] = useState(undefined);
+
+  useEffect(() => {
+    getData()
+  }, []);
+
+  //Obtener
+  const getData = async () => {
+    const response = await fetch("https://rickandmortyapi.com/api/character");
+    const characters = await response.json();
+    setData(characters.results);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {data ? data.map((algo) => (
+        <Post key={algo.id} value={algo} data={algo} ></Post>
+      ))
+        :
+        <h1>No hay datos</h1>
+      }
+      <button onClick={getData}>get Data</button>
+    </div>
+  );
+
+}
+
+export function Post(props) {
+  const { data } = props;
+  return (
+    <div>
+      <img src={data.image} alt="Imagenes R&M" />
+      <p>Ubicacion: {data.location.name}</p>
+      <p>Origen: {data.origin.name}</p>
+      <p>Especie: {data.species}</p>
+      <p>Status: {data.status}</p>
     </div>
   );
 }
-
-export default App;
